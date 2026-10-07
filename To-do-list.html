@@ -1,0 +1,450 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>To-Do List | ANAND CODE LAB</title>
+
+<style>
+* {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
+
+:root {
+  --bg: #0b1020;
+  --panel: #141c30;
+  --text: #f4f7ff;
+  --muted: #9ba8c5;
+  --accent: #6c63ff;
+  --border: #29334d;
+}
+
+body {
+  font-family: Arial, sans-serif;
+  background: radial-gradient(circle at top, #202958, var(--bg) 55%);
+  color: var(--text);
+  min-height: 100vh;
+  padding: 24px 14px;
+}
+
+.container {
+  width: 100%;
+  max-width: 680px;
+  margin: 35px auto;
+}
+
+.brand {
+  text-align: center;
+  color: #a8a2ff;
+  font-size: 13px;
+  font-weight: bold;
+  letter-spacing: 3px;
+  margin-bottom: 16px;
+}
+
+h1 {
+  text-align: center;
+  font-size: clamp(28px, 6vw, 42px);
+  margin-bottom: 10px;
+}
+
+.subtitle {
+  text-align: center;
+  color: var(--muted);
+  margin-bottom: 30px;
+  line-height: 1.6;
+}
+
+.card {
+  background: rgba(20, 28, 48, 0.96);
+  border: 1px solid var(--border);
+  border-radius: 20px;
+  padding: 24px;
+  box-shadow: 0 20px 60px #0005;
+}
+
+.task-form {
+  display: flex;
+  gap: 10px;
+  margin-bottom: 22px;
+}
+
+input, button {
+  font: inherit;
+}
+
+#taskInput {
+  flex: 1;
+  min-width: 0;
+  padding: 15px;
+  border-radius: 12px;
+  border: 1px solid var(--border);
+  background: #0b1223;
+  color: white;
+  outline: none;
+}
+
+#taskInput:focus {
+  border-color: var(--accent);
+}
+
+button {
+  cursor: pointer;
+  border: none;
+  transition: 0.2s ease;
+}
+
+button:active {
+  transform: scale(0.97);
+}
+
+.add-btn {
+  padding: 0 20px;
+  border-radius: 12px;
+  background: var(--accent);
+  color: white;
+  font-weight: bold;
+}
+
+.add-btn:hover {
+  background: #8179ff;
+}
+
+.stats {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 10px;
+  margin-bottom: 22px;
+}
+
+.stat {
+  text-align: center;
+  padding: 15px 5px;
+  border-radius: 12px;
+  background: #0c1427;
+  border: 1px solid var(--border);
+}
+
+.stat strong {
+  display: block;
+  font-size: 24px;
+  margin-bottom: 5px;
+  color: #aaa4ff;
+}
+
+.stat span {
+  color: var(--muted);
+  font-size: 12px;
+}
+
+.toolbar {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 10px;
+  flex-wrap: wrap;
+  margin-bottom: 15px;
+}
+
+.filters {
+  display: flex;
+  gap: 6px;
+  flex-wrap: wrap;
+}
+
+.filter-btn {
+  background: #202a43;
+  color: #bdc7df;
+  padding: 9px 12px;
+  border-radius: 9px;
+  font-size: 13px;
+}
+
+.filter-btn.active {
+  background: var(--accent);
+  color: white;
+}
+
+.clear-btn {
+  color: #ff929b;
+  background: transparent;
+  padding: 8px;
+  font-size: 13px;
+}
+
+#taskList {
+  list-style: none;
+}
+
+.task {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 15px 12px;
+  margin-bottom: 10px;
+  background: #0c1427;
+  border: 1px solid var(--border);
+  border-radius: 12px;
+  animation: appear 0.2s ease;
+}
+
+@keyframes appear {
+  from { opacity: 0; transform: translateY(5px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+.task-check {
+  width: 20px;
+  height: 20px;
+  accent-color: var(--accent);
+  flex-shrink: 0;
+  cursor: pointer;
+}
+
+.task-text {
+  flex: 1;
+  overflow-wrap: anywhere;
+  line-height: 1.5;
+}
+
+.task.completed .task-text {
+  color: #8490aa;
+  text-decoration: line-through;
+}
+
+.delete-btn {
+  color: #ff8993;
+  background: #341c2a;
+  border-radius: 8px;
+  padding: 8px 10px;
+}
+
+.delete-btn:hover {
+  background: #51202e;
+}
+
+.empty {
+  color: var(--muted);
+  text-align: center;
+  padding: 28px 8px;
+  line-height: 1.7;
+}
+
+.footer {
+  text-align: center;
+  margin-top: 24px;
+  color: var(--muted);
+  font-size: 12px;
+  letter-spacing: 1px;
+}
+
+@media (max-width: 450px) {
+  .card { padding: 16px; }
+  .task-form { gap: 7px; }
+  #taskInput { padding: 12px; }
+  .add-btn { padding: 0 13px; }
+  .stat strong { font-size: 21px; }
+  .filter-btn { padding: 8px 9px; }
+}
+</style>
+</head>
+
+<body>
+<main class="container">
+  <div class="brand">ANAND CODE LAB</div>
+  <h1>My To-Do List ✨</h1>
+  <p class="subtitle">
+    Plan your day. Complete your goals.<br>
+    One task at a time.
+  </p>
+
+  <section class="card">
+    <form class="task-form" id="taskForm">
+      <input
+        id="taskInput"
+        type="text"
+        placeholder="What needs to be done?"
+        maxlength="180"
+        autocomplete="off"
+        aria-label="New task"
+        required
+      >
+      <button class="add-btn" type="submit">+ Add</button>
+    </form>
+
+    <div class="stats">
+      <div class="stat">
+        <strong id="totalCount">0</strong>
+        <span>Total Tasks</span>
+      </div>
+      <div class="stat">
+        <strong id="activeCount">0</strong>
+        <span>Pending</span>
+      </div>
+      <div class="stat">
+        <strong id="doneCount">0</strong>
+        <span>Completed</span>
+      </div>
+    </div>
+
+    <div class="toolbar">
+      <div class="filters">
+        <button class="filter-btn active" data-filter="all">All</button>
+        <button class="filter-btn" data-filter="active">Pending</button>
+        <button class="filter-btn" data-filter="completed">Completed</button>
+      </div>
+      <button class="clear-btn" id="clearCompleted" type="button">
+        Clear completed
+      </button>
+    </div>
+
+    <ul id="taskList" aria-live="polite"></ul>
+    <p class="empty" id="emptyMessage">
+      No tasks yet! 🌟<br>Add your first task above.
+    </p>
+  </section>
+
+  <footer class="footer">
+    BUILD • CODE • CREATE 🚀
+  </footer>
+</main>
+
+<script>
+const taskForm = document.getElementById("taskForm");
+const taskInput = document.getElementById("taskInput");
+const taskList = document.getElementById("taskList");
+const emptyMessage = document.getElementById("emptyMessage");
+
+const totalCount = document.getElementById("totalCount");
+const activeCount = document.getElementById("activeCount");
+const doneCount = document.getElementById("doneCount");
+
+let filter = "all";
+let nextId = 1;
+let tasks = [];
+
+try {
+  const saved = JSON.parse(localStorage.getItem("anand-todo-tasks"));
+  if (Array.isArray(saved)) {
+    tasks = saved.filter(task =>
+      task &&
+      typeof task.text === "string" &&
+      typeof task.completed === "boolean" &&
+      Number.isSafeInteger(task.id)
+    );
+    nextId = tasks.reduce((max, task) =>
+      Math.max(max, task.id + 1), 1);
+  }
+} catch (error) {
+  tasks = [];
+}
+
+function saveTasks() {
+  try {
+    localStorage.setItem("anand-todo-tasks", JSON.stringify(tasks));
+  } catch (error) {
+    console.warn("Tasks could not be saved in this browser.");
+  }
+}
+
+function renderTasks() {
+  taskList.replaceChildren();
+
+  const visibleTasks = tasks.filter(task => {
+    if (filter === "active") return !task.completed;
+    if (filter === "completed") return task.completed;
+    return true;
+  });
+
+  totalCount.textContent = tasks.length;
+  activeCount.textContent = tasks.filter(t => !t.completed).length;
+  doneCount.textContent = tasks.filter(t => t.completed).length;
+
+  emptyMessage.style.display = visibleTasks.length ? "none" : "block";
+
+  if (!visibleTasks.length) {
+    emptyMessage.textContent = tasks.length === 0
+      ? "No tasks yet! 🌟 Add your first task above."
+      : "No tasks in this filter. Try another one!";
+  }
+
+  visibleTasks.forEach(task => {
+    const li = document.createElement("li");
+    li.className = "task" + (task.completed ? " completed" : "");
+
+    const checkbox = document.createElement("input");
+    checkbox.type = "checkbox";
+    checkbox.className = "task-check";
+    checkbox.checked = task.completed;
+    checkbox.setAttribute("aria-label", "Mark task completed");
+    checkbox.addEventListener("change", () => {
+      task.completed = checkbox.checked;
+      saveTasks();
+      renderTasks();
+    });
+
+    const text = document.createElement("span");
+    text.className = "task-text";
+    text.textContent = task.text;
+
+    const deleteBtn = document.createElement("button");
+    deleteBtn.className = "delete-btn";
+    deleteBtn.type = "button";
+    deleteBtn.textContent = "Delete";
+    deleteBtn.setAttribute("aria-label", "Delete " + task.text);
+    deleteBtn.addEventListener("click", () => {
+      tasks = tasks.filter(t => t.id !== task.id);
+      saveTasks();
+      renderTasks();
+    });
+
+    li.append(checkbox, text, deleteBtn);
+    taskList.appendChild(li);
+  });
+
+  document.querySelectorAll(".filter-btn").forEach(btn => {
+    const isActive = btn.dataset.filter === filter;
+    btn.classList.toggle("active", isActive);
+    btn.setAttribute("aria-pressed", String(isActive));
+  });
+}
+
+taskForm.addEventListener("submit", event => {
+  event.preventDefault();
+
+  const text = taskInput.value.trim();
+  if (!text) return;
+
+  tasks.unshift({
+    id: nextId++,
+    text,
+    completed: false
+  });
+
+  taskInput.value = "";
+  filter = "all";
+  saveTasks();
+  renderTasks();
+  taskInput.focus();
+});
+
+document.querySelectorAll(".filter-btn").forEach(btn => {
+  btn.addEventListener("click", () => {
+    filter = btn.dataset.filter;
+    renderTasks();
+  });
+});
+
+document.getElementById("clearCompleted").addEventListener("click", () => {
+  tasks = tasks.filter(task => !task.completed);
+  saveTasks();
+  renderTasks();
+});
+
+renderTasks();
+</script>
+</body>
+</html>
